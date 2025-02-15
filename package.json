@@ -1,0 +1,14 @@
+{
+  "name": "fullstack-part-11",
+  "version": "1.0.0",
+  "description": "Exercises 20 and 21",
+  "main": "index.js",
+  "scripts": {
+    "install:all": "npm install --prefix phonebook-front && npm install --prefix phonebook-backend",
+    "test": "npm test --prefix phonebook-front && npm test --prefix phonebook-backend",
+    "dev": "npm start --prefix phonebook-front & npm run dev --prefix phonebook-backend"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}
