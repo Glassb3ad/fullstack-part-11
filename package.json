@@ -7,7 +7,10 @@
     "install:all": "npm install --prefix phonebook-front && npm install --prefix phonebook-backend",
     "test": "npm test --prefix phonebook-front && npm test --prefix phonebook-backend",
     "lint": "npm run lint --prefix phonebook-front && npm run lint --prefix phonebook-backend",
-    "dev": "npm start --prefix phonebook-front & npm run dev --prefix phonebook-backend"
+    "dev": "npm start --prefix phonebook-front & npm run dev --prefix phonebook-backend",
+    "build": "npm run build:front && npm run copy-dist",
+    "build:front": "npm run build --prefix phonebook-front",
+    "copy-dist": "rm -rf phonebook-backend/build && cp -r phonebook-front/build phonebook-backend/build"
   },
   "keywords": [],
   "author": "",

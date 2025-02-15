@@ -15,16 +15,15 @@ if (process.argv.length > 3) {
         number: process.argv[4]
     })
 
-    newNumber.save().then(() => {
-        console.log(newNumber + "saved")
-        mongoose.connection.close()
-    })
+    await newNumber.save()
+
+    console.log(newNumber + "saved")
+    mongoose.connection.close()
 }
 else {
-    Number.find({}).then(res => {
-        res.forEach(a => {
-            console.log(a)
-        })
-        mongoose.connection.close()
+    const res = await Number.find({})
+    res.forEach(a => {
+        console.log(a)
     })
+    mongoose.connection.close()
 }

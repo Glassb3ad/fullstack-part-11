@@ -1,8 +1,17 @@
-import ReactDOM from 'react-dom'
-import App from './App'
+import React from 'react';
+import ReactDOM from 'react-dom/client';
+import './index.css';
+import App from './App';
 
-ReactDOM.createRoot(
-  // eslint-disable-next-line react/react-in-jsx-scope
-  <App />,
-  document.getElementById('root')
-)
+// Ensure the element with id 'root' exists in your HTML
+const rootElement = document.getElementById('root');
+if (rootElement) {
+  const root = ReactDOM.createRoot(rootElement);
+  root.render(
+    <React.StrictMode>
+      <App />
+    </React.StrictMode>
+  );
+} else {
+  console.error('Root container element not found');
+}

@@ -19,8 +19,8 @@ jobs:
         run: npm run install:all
       - name: Check style
         run: npm run lint
-      # - name: Build
-      #   run: npm run build
+      - name: Build
+        run: npm run build
       - name: Test
         run: npm run test
       # - uses: superfly/flyctl-actions/setup-flyctl@master

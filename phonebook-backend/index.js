@@ -1,4 +1,3 @@
-const { response } = require("express")
 const { createMessage } = require("./message")
 
 const express = require("express")
@@ -10,104 +9,99 @@ const app = express()
 app.use(express.json())
 app.use(morgan("tiny"))
 app.use(cors())
+
 app.use(express.static("build"))
 
-
-app.get("/api/persons", (request, response) => {
-    Person.find({}).then(persons => {
-        //console.log(persons)
+app.get("/api/persons", async (request, response) => {
+    try {
+        const persons = await Person.find({})
         response.json(persons)
-    })
+    } catch (error) {
+        response.status(500).json({ error: error.message })
+    }
 })
 
-app.get("/api/persons/:id", (request, response, next) => {
-    Person.findById(request.params.id).then(person => {
+app.get("/api/persons/:id", async (request, response, next) => {
+    try {
+        const person = await Person.findById(request.params.id)
         if (person) {
             response.json(person)
+        } else {
+            response.status(404).end()
         }
-        else response.status(404).end()
-    })
-        .catch(error => next(error))
-
-
-    /*const id = Number.parseInt(request.params.id)
-    //console.log(id)
-    const person = numbers.find(a => {
-        //console.log(a.id, typeof a.id, id, typeof id, a.id === id)
-        return a.id === id
-    })
-    //console.log(person)
-    if (person) {
-        response.json(person)
-      } else {
-        response.status(404).end()
-      }*/
+    } catch (error) {
+        next(error)
+    }
 })
 
-app.get("/info", (req, res) => {
-    Person.find({}).then(persons => {
-        //console.log(persons)
-        let personCount = persons.length
-        //console.log(persons.length)
+app.get("/info", async (req, res) => {
+    try {
+        const persons = await Person.find({})
+        const personCount = persons.length
         res.send(createMessage(personCount, new Date()))
-    })
-})
-
-app.delete("/api/persons/:id", (req, res, next) => {
-    Person.findByIdAndRemove(req.params.id)
-        .then(result => {
-            res.status(204).end()
-            console.log(result)
-        })
-        .catch(error => next(error))
-})
-
-app.post("/api/persons", (req, res, next) => {
-    const body = req.body
-    console.log(body)
-    const newPerson = new Person({
-        name: body.name,
-        number: body.number
-    })
-    //const personNames = numbers.map(a => a.name)
-    //console.log(personNames)
-    console.log(newPerson)
-    if (!newPerson.name) {
-        res.status(400).json({
-            error: "name missing"
-        })
-    }
-    else if (!newPerson.number) {
-        res.status(400).json({
-            error: "number is missing"
-        })
-    }
-    /*else if(personNames.includes(newPerson.name)){
-        res.status(400).json({ 
-            error: 'name must be unique' 
-        })
-    }*/
-    else {
-        newPerson.save().then(savedNote => {
-            response.json(savedNote)
-        })
-            .catch(error => next(error))
+    } catch (error) {
+        res.status(500).json({ error: error.message })
     }
 })
 
-app.put("/api/persons/:id", (request, response, next) => {
-    const body = request.body
-
-    const pers = {
-        name: body.name,
-        number: body.number
+app.delete("/api/persons/:id", async (req, res, next) => {
+    try {
+        await Person.findByIdAndRemove(req.params.id)
+        res.status(204).end()
+    } catch (error) {
+        next(error)
     }
+})
 
-    Person.findByIdAndUpdate(request.params.id, pers, { new: true })
-        .then(updatedPerson => {
-            response.json(updatedPerson)
+app.post("/api/persons", async (req, res, next) => {
+    try {
+        const body = req.body
+        console.log(body)
+        if (!body.name) {
+            return res.status(400).json({
+                error: "name missing"
+            })
+        }
+        if (!body.number) {
+            return res.status(400).json({
+                error: "number missing"
+            })
+        }
+
+        const newPerson = new Person({
+            name: body.name,
+            number: body.number
         })
-        .catch(error => next(error))
+
+        // Save the new person to the database
+        const savedPerson = await newPerson.save()
+
+        // Return the saved person as the response
+        res.json(savedPerson)
+    } catch (err) {
+        next(err)
+    }
+})
+
+app.put("/api/persons/:id", async (request, response, next) => {
+    try {
+        const body = request.body
+
+        const pers = {
+            name: body.name,
+            number: body.number
+        }
+
+        const updatedPerson = await Person.findByIdAndUpdate(
+            request.params.id,
+            pers,
+            { new: true }
+        )
+
+        response.json(updatedPerson)
+    } catch (error) {
+        next(error)
+    }
 })
 
 const unknownEndpoint = (request, response) => {
