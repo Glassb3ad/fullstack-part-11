@@ -17,8 +17,8 @@ jobs:
           node-version: '20'
       - name: Install dependencies
         run: npm run install:all
-      # - name: Check style
-      #   run: npm run eslint
+      - name: Check style
+        run: npm run lint
       # - name: Build
       #   run: npm run build
       - name: Test
